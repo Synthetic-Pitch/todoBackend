@@ -32,15 +32,17 @@ serve(async (req: Request) => {
     if (!file || typeof file === "string") {
       return new Response("Missing 'image' file field", { status: 400 });
     }
-    
+    //convert to base64
     const arrayBuffer = await file.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
+    
+    //upload to cloudinary by wrapping in a promise
     const result = await uploadToCloudinary(buffer);
     const itemID = result.public_id;
     const url = result.secure_url;
 
     return new Response(JSON.stringify({
-      itemID:itemID,
+      public_ID:itemID,
       url:url,
     }), {
       headers: { "Content-Type": "application/json" },
